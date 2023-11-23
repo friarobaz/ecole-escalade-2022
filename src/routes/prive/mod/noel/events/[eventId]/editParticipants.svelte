@@ -7,7 +7,9 @@
     import StudentSelection from '$components/StudentSelection.svelte'
     const eventId = $params.eventId
 
-    let event, loading, selectedStudent, selectedCategorie, categories
+    let event, loading, selectedStudent, selectedCategorie, categories, showOtherStudentForm, firstNameInput, lastNameInput, tmpId
+
+    $:if(firstNameInput && lastNameInput) tmpId = `${firstNameInput}_${lastNameInput}_ID`
  
     const getEvent = async() =>{
         loading = true
@@ -26,14 +28,26 @@
     }
 
     const addPax = async (catId, pax) =>{
-       
         selectedStudent = undefined
         selectedCategorie = undefined
-        await _updateDoc({students:arrayUnion({
-            firstName:pax.data().firstName,
-            lastName:pax.data().lastName,
-            id:pax.id,
-        })}, 'events', event.id, 'categories', catId)
+        
+        //if student is not part of EE
+        if(tmpId){
+            await _updateDoc({students:arrayUnion({
+                firstName:pax.firstName,
+                lastName:pax.lastName,
+                id:pax.id,
+            })}, 'events', event.id, 'categories', catId)
+        }else{
+            await _updateDoc({students:arrayUnion({
+                firstName:pax.data().firstName,
+                lastName:pax.data().lastName,
+                id:pax.id,
+            })}, 'events', event.id, 'categories', catId)
+        }
+        firstNameInput = ''
+        lastNameInput = ''
+        tmpId = undefined
         selectedStudent = undefined
     }
 
@@ -74,7 +88,15 @@
                 </li>
             </ul>
             {#if selectedCategorie==cat.id}
-                <StudentSelection bind:selectedStudent={selectedStudent}/>
+                Enfant ne faisant pas partie de l'école d'escalade <input type="checkbox" role="switch" bind:checked={showOtherStudentForm}>
+                <br><br>
+                {#if showOtherStudentForm}
+                    Prénom <input type="text" bind:value={firstNameInput}><br>
+                    Nom <input type="text" bind:value={lastNameInput}><br>
+                    <a href="#" role="button" on:click={()=>selectedStudent={firstName:firstNameInput, lastName:lastNameInput, id:tmpId}}>Ajouter</a>
+                {:else}
+                    <StudentSelection bind:selectedStudent={selectedStudent}/>
+                {/if}
             {/if}
         </div>
     {/each}

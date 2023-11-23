@@ -1,5 +1,5 @@
 <script>
-    import { _getDoc, _updateDoc } from '$utils/firebase/firestore/basics'
+    import { _getDoc, _getDocs, _updateDoc } from '$utils/firebase/firestore/basics'
     import Route from '$components/contest/Route.svelte'
     import {printName} from '$utils/printName'
     import { doc, onSnapshot } from "firebase/firestore"
@@ -9,9 +9,11 @@
     import { arrayRemove } from 'firebase/firestore';
     let eventId = $params.eventId
     let event
+    let categories = []
 
     const getEvent = async () =>{
         event = await _getDoc('events', eventId)
+        categories = await _getDocs('events', eventId, 'categories')
     }
     
     const unsub = onSnapshot(doc(db, "events", eventId), (event) => {
@@ -25,28 +27,28 @@
         console.log('done');
     }
 
-    const resetRuns = async()=>{
+    const resetRuns = async(catId)=>{
         const res = confirm('Êtes vous sûrs de vouloir TOUT SUPPRIMER !!!!????')
         if(!res) return
-        await _updateDoc({runs:[]}, 'events', eventId)
+        await _updateDoc({runs:[]}, 'events', eventId, 'categories', catId)
         console.log('done');
     }
 </script>
 
 {#if event}
-    <a href="#" role="button" on:click={resetRuns}>Tout supprimer</a><br><br>
-    {#each event.data().categories as cat,i}
-        <h3>{cat}</h3>
+    {#each categories as cat}
+        <h3>{cat.data().title}</h3>
+        <a href="#" on:click={()=>resetRuns(cat.id)}>Tout supprimer</a><br><br>
         <ul>
-            {#each event.data().participants.filter(x=>x.categorie==i) as pax}
+            {#each cat.data().students as pax}
                 <li>
                     <strong>{printName(pax)}</strong>
                     <ul>
-                        {#each event.data().runs.filter(x=>x.student==pax.id) as run}
+                        {#each cat.data().runs.filter(x=>x.student==pax.id) as run}
                             <li on:click={()=>delRun(run)}>
-                                {event.data().routes.filter(x=>x.id==run.route)[0].lineTxt}
-                                (ligne {event.data().routes.filter(x=>x.id==run.route)[0].lineNb})
-                                <Route {event} route={event.data().routes.filter(x=>x.id==run.route)[0]}/>
+                                {cat.data().routes.filter(x=>x.id==run.route)[0].lineTxt}
+                                (ligne {cat.data().routes.filter(x=>x.id==run.route)[0].lineNb})
+                                <Route {event} route={cat.data().routes.filter(x=>x.id==run.route)[0]}/>
                             </li>
                         {/each}
                     </ul>
