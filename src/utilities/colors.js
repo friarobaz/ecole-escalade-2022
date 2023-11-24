@@ -32,7 +32,7 @@ export const COLORS = [
     },
     {
         name:"Violette",
-        background: "indigo",
+        background: "#7A008A",
         text: "white"
     },
     {

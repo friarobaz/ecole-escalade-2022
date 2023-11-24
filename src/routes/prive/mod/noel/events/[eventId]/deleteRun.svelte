@@ -20,10 +20,10 @@
         getEvent()
     })
 
-    const delRun = async (run)=>{
+    const delRun = async (run, category)=>{
         const res = confirm('Êtes vous sûrs de vouloir supprimer ca ?')
         if(!res) return
-        await _updateDoc({runs:arrayRemove(run)}, 'events', eventId)
+        await _updateDoc({runs:arrayRemove(run)}, 'events', eventId, 'categories', category.id )
         console.log('done');
     }
 
@@ -45,7 +45,7 @@
                     <strong>{printName(pax)}</strong>
                     <ul>
                         {#each cat.data().runs.filter(x=>x.student==pax.id) as run}
-                            <li on:click={()=>delRun(run)}>
+                            <li on:click={()=>delRun(run, cat)}>
                                 {cat.data().routes.filter(x=>x.id==run.route)[0].lineTxt}
                                 (ligne {cat.data().routes.filter(x=>x.id==run.route)[0].lineNb})
                                 <Route {event} route={cat.data().routes.filter(x=>x.id==run.route)[0]}/>

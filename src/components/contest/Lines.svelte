@@ -34,7 +34,7 @@
         <li>
             <hgroup>
                 <h4>Ligne {line.nb} </h4>
-                <h5>{line.txt}</h5>
+                <h5 class="cap">{line.txt}</h5>
             </hgroup>
             <ul>
                 <Routes2 routes={routes.filter(x=>x.lineNb==line.nb)} bind:selectedRoute={selectedRoute} {event} {categories} {student}/>
@@ -60,5 +60,9 @@
     h4{
         margin-bottom:15px;
         margin-top:30px;
+    }
+
+    h5.cap{
+        text-transform: capitalize;
     }
 </style>
