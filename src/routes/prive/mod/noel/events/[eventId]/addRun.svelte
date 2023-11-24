@@ -64,7 +64,7 @@
             </hgroup>
             {#if !selectedRoute}
                 <!-- <Routes routes={studentCategory(selectedStudent, categories).data().routes} bind:selectedRoute={selectedRoute}/> -->
-                <Lines routes={studentCategory(selectedStudent, categories).data().routes} bind:selectedRoute={selectedRoute} showMulticolor={false} />
+                <Lines routes={studentCategory(selectedStudent, categories).data().routes} bind:selectedRoute={selectedRoute} showMulticolor={false} student={selectedStudent} {categories}/>
             {:else}
                 
                 <RunConfirmation route={selectedRoute} student={selectedStudent} {event} category={studentCategory(selectedStudent, categories)} bind:reset={reset}/>

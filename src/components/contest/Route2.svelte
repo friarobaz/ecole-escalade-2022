@@ -14,9 +14,10 @@
     import RouteCategories from './RouteCategories.svelte'
     import { arrayUnion, doc, onSnapshot, collection, query, where } from "firebase/firestore"
     import { db } from "$utils/firebase/firebase"
-    export let route, selectedRoute, event, categories
+    export let route, selectedRoute, event, categories, done
 
     const toggleSelected = ()=>{
+        if(done)return
             if (selectedRoute == route) {
                 selectedRoute = undefined
             } else {
@@ -37,7 +38,8 @@
 </script>
 
 <div on:click={toggleSelected}>
-    <RouteButton color={route.color} text={route.grade} selected={selectedRoute==route}/>
+
+    <RouteButton color={route.color} text={route.grade} selected={selectedRoute==route} {done}/>
     {#if event && categories}
         
             <RouteCategories {route} {event} {categories}/>

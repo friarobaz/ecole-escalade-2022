@@ -5,7 +5,7 @@ const getLineNb = (category, routeId)=>{
     return route.lineNb
 }
 
-const releventRuns = (category, routeId)=>{
+export const releventRuns = (category, routeId)=>{
     if(category==undefined)throw'No category'
     const route = category.data().routes.filter(x=>x.id===routeId)[0]
     let runs = []
