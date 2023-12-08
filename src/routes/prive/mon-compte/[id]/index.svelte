@@ -43,7 +43,8 @@
 
     // $:if(student && getDayFromUrl(student.public.seasons[$currentSeason.name].day), $currentSeason.days) error = "Une erreur est survenue"
 </script>
-<ErrorMessage {error} modal={true}/>
+<!-- change true to false to be able to change season 08/12/23 -->
+<ErrorMessage {error} modal={false}/>
 {#if student && !fetching}
     {#if student.public.seasons[$currentSeason.name]}
         <article>

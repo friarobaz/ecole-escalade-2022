@@ -87,7 +87,8 @@ $:console.log(student);
             </div>
             {#if name==$currentSeason.name}
                 <a href="#" role="button" on:click={()=>showChangeStatus=true}>Changer les status</a>
-                <a href={`/prive/mon-compte/${student.id}`} target='_new' role="button">Aide à l'inscription</a>
+                <!-- removed target=new so it doesnt throw error when not current season -->
+                <a href={`/prive/mon-compte/${student.id}`} role="button">Aide à l'inscription</a>
                     
             {/if}
         </div>
