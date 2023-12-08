@@ -122,7 +122,6 @@
                         <option value={'last'}>{seasons().last}</option>  
                         <option value={'current'}>{seasons().current}</option>  
                         <option value={'next'}>{seasons().next}</option>
-                        <option value={'next'}>{seasons().next}</option>
                         <!-- removed benevol season, not used ? 08/12/23 -->
                        <!--  <option value={'benevoles'}>Bénévoles</option>   -->
                     </select>
