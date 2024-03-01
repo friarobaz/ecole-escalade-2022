@@ -1,4 +1,5 @@
 <script>
+    //NON UTILISE
     import {_getDoc, _updateDoc, _setDoc} from '$firestore/basics'
 import { normalize } from '$utils/normalize';
     let priorityStudents = []

@@ -12,7 +12,10 @@
         if (!title) throw "No title"
         if (!selectedGym) throw "No gym"
         if (categories.length < 1) throw "No categories"
-        const eventId = await _addDoc({title, participants:[], routes: [], categories, timestamp: dayjs().unix(), gymName:selectedGym.id}, "events")
+        const eventId = await _addDoc({title, timestamp: dayjs().unix(), gymName:selectedGym.id}, "events")
+        for (const cat of categories) {
+            await _addDoc({routes:[], students:[], runs:[], title:cat}, 'events', eventId, 'categories')
+        }
         loading = false
         $goto('/prive/mod/noel/events/[eventId]', {eventId})
     }

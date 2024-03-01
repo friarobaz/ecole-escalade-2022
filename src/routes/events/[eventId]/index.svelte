@@ -2,7 +2,7 @@
     import { _getDoc, _getDocs, _query } from '$utils/firebase/firestore/basics';
      import {params} from '@roxi/routify'
      const eventId = $params.eventId
-     let event, loading
+     let event, loading, categories
      $:if (eventId) {
         getEvent()
      }
@@ -17,6 +17,7 @@
             const doc = await _getDoc('events', eventId)
             event = doc
         }
+        categories = await _getDocs('events', event.id, 'categories')
         loading = false
      }
 </script>
@@ -25,13 +26,13 @@
     {#if loading}
         loading
     {:else}
-        {#if event}
+        {#if event && categories}
             <h1>{event.data().title}</h1>
             <center><h3>Catégories</h3></center>
             <div class="container">
-                {#each event.data().categories as cat, i}
+                {#each categories as cat}
                     <div class="button">
-                        <a href="./{event.id}/{i}/points" role="button">{cat}</a>
+                        <a href="./{event.id}/{cat.id}/points" role="button">{cat.data().title}</a>
                     </div>
                 {/each}
                 <div class="button">

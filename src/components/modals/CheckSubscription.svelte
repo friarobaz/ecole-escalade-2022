@@ -9,6 +9,7 @@
     import ErrorMessage from '$components/htmlElements/ErrorMessage.svelte'
     import { BError } from "berror"
     import { getAuth} from "firebase/auth"
+    import { _updateDoc } from '$utils/firebase/firestore/basics';
     export let adult
    
     let full = false
@@ -23,8 +24,21 @@
         const timestamp = dayjs().unix()
         $subscription.publicInfo.seasons[$currentSeason.name].timestamp = timestamp
         $subscription.publicInfo.parents = [getAuth().currentUser.uid]
-        const studentId = await createNewStudent($subscription, $currentSeason)
-        $subscription.id = studentId
+        //if student already exists
+        if ($subscription.id) {
+          const season = {
+            day: dayUrl,
+            licence: "no",
+            medicalCertificate: "no",
+            payment: "no",
+            status: "no",
+            timestamp
+          }
+          await _updateDoc({[`seasons.${$currentSeason.name}`]:season}, 'students', $subscription.id)
+        }else{
+          const studentId = await createNewStudent($subscription, $currentSeason)
+          $subscription.id = studentId
+        }
         $subscriptionStatus = 'uploadedToFirestore'
         loading = false
       } catch (err) {

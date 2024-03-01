@@ -5,7 +5,7 @@
     import { subscription } from '$utils/stores'
     import { getAuth } from "firebase/auth"
 
-    let firstName, lastName, tel, accidentTel, dateOfBirth
+    let firstName, lastName, tel, accidentTel, dateOfBirth, selectedStudent
     export let pastStudentsOnly = false
 
     $:email = getAuth().currentUser.email
@@ -27,11 +27,15 @@
     $:if(email) $subscription.privateInfo.email = email
     $:if(accidentTel) $subscription.privateInfo.accidentTel = accidentTel
 
+    $:if(selectedStudent) dateOfBirth = selectedStudent.private.dateOfBirth
+    $:if(selectedStudent) tel = selectedStudent.private.tel
+    $:if(selectedStudent) accidentTel = selectedStudent.private.accidentTel
+
 </script>
 
  <section>
     {#if pastStudentsOnly}
-        <NameFormWithRestriction bind:firstName bind:lastName  />
+        <NameFormWithRestriction bind:firstName bind:lastName bind:selectedStudent  />
     {:else}
         <NameFormNoRestriction bind:firstName bind:lastName  />
     {/if}

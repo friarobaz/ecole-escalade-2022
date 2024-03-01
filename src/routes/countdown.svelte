@@ -87,6 +87,8 @@
       <button on:click={$goto("/")}>Cliquez ici pour choisir votre créneau</button>
     {/if}
   {/if}
+ <!--  <br><br><br><br><br><br>
+  <small>Voues êtes bénévole au CAF de Faverges ? cliquez ici</small> -->
 </div>
 
 

@@ -104,9 +104,17 @@ import Tooltip from "$components/htmlElements/Tooltip.svelte"
                             {#if studentOfCurrentUser(student)}
                                 <td><a href={`/prive/mon-compte/${student.id}`} role="button" class="outline">{capitalize(student.data().firstName)} {student.data().lastName.toUpperCase()}</a></td>
                             {:else if $mod}
-                                <td><a href={`/prive/mon-compte/${student.id}`}>{capitalize(student.data().firstName)} {student.data().lastName.toUpperCase()}</a></td>
+                                {#if student.data().lastName && student.data().firstName}
+                                    <td><a href={`/prive/mon-compte/${student.id}`}>{capitalize(student.data().firstName)} {student.data().lastName.toUpperCase()}</a></td>
+                                {:else}
+                                    ???
+                                {/if}
                             {:else}
-                                <td>{capitalize(student.data().firstName)} {student.data().lastName.toUpperCase()}</td>
+                                {#if student.data().lastName && student.data().firstName}
+                                    <td>{capitalize(student.data().firstName)} {student.data().lastName.toUpperCase()}</td>
+                                {:else}
+                                    ???
+                                {/if}
                             {/if}
 
 

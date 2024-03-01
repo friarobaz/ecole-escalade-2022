@@ -4,8 +4,10 @@
     import DaysRecapTable from '$components/tables/DaysRecapTable.svelte'
     import { _query } from '$utils/firebase/firestore/basics'
     import { getAuth } from 'firebase/auth'
+    import { seasons } from '$utils/seasons';
     let userStudents 
     $:if(getAuth().currentUser) userStudents = _query("students", 'parents', 'array-contains', getAuth().currentUser.uid)
+    
 </script>
 
 <hgroup>
@@ -23,7 +25,7 @@
 
 {#if $loggedin}
     {#await userStudents then userStudents}
-        {#if userStudents.length === 1}
+        {#if userStudents.length === 1 && userStudents[0].data().seasons[$currentSeason.name]}
             <a href={`/prive/mon-compte/${userStudents[0].id}`} role="button" class="outline">Mes inscriptions en cours</a>
         {:else if userStudents.length > 1}
             <a href="/prive/mon-compte" role="button" class="outline">Mes inscriptions en cours</a>

@@ -147,6 +147,22 @@ export default {
               },
               "children": [
                 {
+                  "meta": {
+                    "dynamic": true
+                  },
+                  "id": "_default_events__eventId___categorie___studentId__svelte",
+                  "name": "[studentId]",
+                  "module": () => import('../src/routes/events/[eventId]/[categorie]/[studentId].svelte'),
+                  "file": {
+                    "path": "src/routes/events/[eventId]/[categorie]/[studentId].svelte",
+                    "dir": "src/routes/events/[eventId]/[categorie]",
+                    "base": "[studentId].svelte",
+                    "ext": ".svelte",
+                    "name": "[studentId]"
+                  },
+                  "children": []
+                },
+                {
                   "meta": {},
                   "id": "_default_events__eventId___categorie__index_svelte",
                   "name": "index",
@@ -480,6 +496,20 @@ export default {
             },
             {
               "meta": {},
+              "id": "_default_prive_mod_editAdminEmails_svelte",
+              "name": "editAdminEmails",
+              "module": () => import('../src/routes/prive/mod/editAdminEmails.svelte'),
+              "file": {
+                "path": "src/routes/prive/mod/editAdminEmails.svelte",
+                "dir": "src/routes/prive/mod",
+                "base": "editAdminEmails.svelte",
+                "ext": ".svelte",
+                "name": "editAdminEmails"
+              },
+              "children": []
+            },
+            {
+              "meta": {},
               "id": "_default_prive_mod_emailHistory_svelte",
               "name": "emailHistory",
               "module": () => import('../src/routes/prive/mod/emailHistory.svelte'),
@@ -605,34 +635,6 @@ export default {
                         },
                         {
                           "meta": {},
-                          "id": "_default_prive_mod_noel_events__eventId__assignRoutes_svelte",
-                          "name": "assignRoutes",
-                          "module": () => import('../src/routes/prive/mod/noel/events/[eventId]/assignRoutes.svelte'),
-                          "file": {
-                            "path": "src/routes/prive/mod/noel/events/[eventId]/assignRoutes.svelte",
-                            "dir": "src/routes/prive/mod/noel/events/[eventId]",
-                            "base": "assignRoutes.svelte",
-                            "ext": ".svelte",
-                            "name": "assignRoutes"
-                          },
-                          "children": []
-                        },
-                        {
-                          "meta": {},
-                          "id": "_default_prive_mod_noel_events__eventId__delRoutes_svelte",
-                          "name": "delRoutes",
-                          "module": () => import('../src/routes/prive/mod/noel/events/[eventId]/delRoutes.svelte'),
-                          "file": {
-                            "path": "src/routes/prive/mod/noel/events/[eventId]/delRoutes.svelte",
-                            "dir": "src/routes/prive/mod/noel/events/[eventId]",
-                            "base": "delRoutes.svelte",
-                            "ext": ".svelte",
-                            "name": "delRoutes"
-                          },
-                          "children": []
-                        },
-                        {
-                          "meta": {},
                           "id": "_default_prive_mod_noel_events__eventId__deleteRun_svelte",
                           "name": "deleteRun",
                           "module": () => import('../src/routes/prive/mod/noel/events/[eventId]/deleteRun.svelte'),
@@ -691,15 +693,15 @@ export default {
                           "meta": {
                             "reset": true
                           },
-                          "id": "_default_prive_mod_noel_events__eventId__routes_svelte",
-                          "name": "routes",
-                          "module": () => import('../src/routes/prive/mod/noel/events/[eventId]/routes.svelte'),
+                          "id": "_default_prive_mod_noel_events__eventId__routes_UNUSED_svelte",
+                          "name": "routes_UNUSED",
+                          "module": () => import('../src/routes/prive/mod/noel/events/[eventId]/routes_UNUSED.svelte'),
                           "file": {
-                            "path": "src/routes/prive/mod/noel/events/[eventId]/routes.svelte",
+                            "path": "src/routes/prive/mod/noel/events/[eventId]/routes_UNUSED.svelte",
                             "dir": "src/routes/prive/mod/noel/events/[eventId]",
-                            "base": "routes.svelte",
+                            "base": "routes_UNUSED.svelte",
                             "ext": ".svelte",
-                            "name": "routes"
+                            "name": "routes_UNUSED"
                           },
                           "children": []
                         }
@@ -716,20 +718,6 @@ export default {
                         "base": "createEvent.svelte",
                         "ext": ".svelte",
                         "name": "createEvent"
-                      },
-                      "children": []
-                    },
-                    {
-                      "meta": {},
-                      "id": "_default_prive_mod_noel_events_createEvent_OLD_svelte",
-                      "name": "createEvent_OLD",
-                      "module": () => import('../src/routes/prive/mod/noel/events/createEvent_OLD.svelte'),
-                      "file": {
-                        "path": "src/routes/prive/mod/noel/events/createEvent_OLD.svelte",
-                        "dir": "src/routes/prive/mod/noel/events",
-                        "base": "createEvent_OLD.svelte",
-                        "ext": ".svelte",
-                        "name": "createEvent_OLD"
                       },
                       "children": []
                     },

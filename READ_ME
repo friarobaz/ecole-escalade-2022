@@ -36,3 +36,9 @@ Primary color: #1095C1
 var(--primary)
 
  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+TRANSFERT PROJET
+ Video youtube d'aide pour le transfert de données d'un projet à l'autre
+ https://www.youtube.com/watch?v=bKDdZKlnJGk
+ Doc:  https://firebase.google.com/docs/firestore/manage-data/move-data
+

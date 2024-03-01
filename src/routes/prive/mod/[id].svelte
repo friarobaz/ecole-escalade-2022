@@ -15,6 +15,7 @@
     import { capitalize } from '$utils/capitalize'
     import Contact from '$components/htmlElements/Contact.svelte'
     import { _query, _updateDoc } from '$utils/firebase/firestore/basics'
+    import { blank_object } from 'svelte/internal';
 
     let student, showModifyDatabase, showChangeStatus
 
@@ -46,59 +47,90 @@
             _updateDoc({parents:arrayUnion(user.id)}, 'students', student.id)
         }
     }
+
+    const changeWrongAgeSetting = async (setting) =>{
+        const response = await _updateDoc({allowed:setting}, 'students', student.id)
+        console.log(response);
+    }
+$:console.log(student);
 </script>
 
 {#if student && student.public && student.private}
     <hgroup>
         <h1>{printName(student.public)}</h1>
         <h5>
-            {student.id}
-            {#if student.public.seasons[$currentSeason.name].licenceNb}
-                <br>{student.public.seasons[$currentSeason.name].licenceNb}
+            ID: {student.id}
+            {#if student.public.seasons[$currentSeason.name] && student.public.seasons[$currentSeason.name].licenceNb}
+                <br>   
+                Numero de licence: {student.public.seasons[$currentSeason.name].licenceNb}
             {/if}
         </h5>
     </hgroup>
-    {$currentSeason.name} : <strong>{student.public.seasons[$currentSeason.name].day}</strong>
-    {#if student.public.seasons[$currentSeason.name].timestamp}
-        <small>(inscrit·e le {dayjs.unix(student.public.seasons[$currentSeason.name].timestamp).format('DD MMMM à HH:mm')})</small>
-    {/if}
-    <br><br>
-    <div on:click={()=>showChangeStatus=true} style='cursor:pointer'>
-        {#each ['payment', 'medicalCertificate', 'licence'] as field}
-             {capitalize(translate(field))} : <Boolean value={student.public.seasons[$currentSeason.name][field]} big={true}/>
-             {#if field==='payment' && student.public.seasons[$currentSeason.name].paymentType}
-                <small>({translate(student.public.seasons[$currentSeason.name].paymentType)})</small>
-             {/if}
-             <br>
-        {/each}
-    </div>
-    <br>
-    <a href={`/prive/mod/sendEmail?id=${student.id}`} role="button">Envoyer un email</a>
-    <a href="#" role="button" on:click={()=>showChangeStatus=true}>Changer les status</a>
-    <a href={`/prive/mon-compte/${student.id}`} target='_new' role="button">Aide à l'inscription</a>
-    <br><br>
-    <Contact {student}/>
-    <br><br>
-    {#if $admin}
-        <a href="#" role="button" class="danger" on:click={()=>deleteStudent(student.id)}>Supprimer</a>
+    
+    {#each Object.entries(student.public.seasons).sort((a,b) => b[1]-a[1])  as [name, obj]}
+        <div class={name==$currentSeason.name ? 'current' : 'faded'}>
+            <b>{name}</b> : {obj.day}
+            {#if obj.timestamp}
+                <small>(inscrit·e le {dayjs.unix(obj.timestamp).format('DD MMMM à HH:mm')})</small>
+            {/if}
+            <br>
+            <div>
+                {#each ['payment', 'medicalCertificate', 'licence'] as field}
+                    {capitalize(translate(field))} : <Boolean value={student.public.seasons[name][field]} big={true}/>
+                    {#if field==='payment' && student.public.seasons[name].paymentType}
+                        <small>({translate(student.public.seasons[name].paymentType)})</small>
+                    {:else if field ==='licence' && student.public.seasons[name].licenceNb}
+                        <small>({student.public.seasons[name].licenceNb})</small>
+                    {/if}
+                    <br>
+                {/each}
+            </div>
+            {#if name==$currentSeason.name}
+                <a href="#" role="button" on:click={()=>showChangeStatus=true}>Changer les status</a>
+                <!-- removed target=new so it doesnt throw error when not current season -->
+                <a href={`/prive/mon-compte/${student.id}`} role="button">Aide à l'inscription</a>
+                    
+            {/if}
+        </div>
+        <br><br>
+    {/each}
+
+    {#if student.public.seasons[$currentSeason.name]}
+        {#if showChangeStatus}
+            <h3>Changer le status</h3>
+            <ChangeStatus bind:student={student} bind:open={showChangeStatus}/>
+        {/if}
     {:else}
-        <a href="#" role="button" class="danger" disabled>Supprimer</a>
+    <strong style="color:red">
+        Cet élève n'est pas inscrit sur cette saison
+    </strong>
     {/if}
-    <a href="#" role="button" class={showModifyDatabase?'secondary':'secondary outline'} on:click={()=>showModifyDatabase=!showModifyDatabase}>
-        Base de données
-    </a>
-    <a href="#" role="button" class="secondary" on:click={addParent}>Donner accès à un utilisateur</a>
-    <br><br>
-
-    {#if showChangeStatus}
-        <h3>Changer le status</h3>
-        <ChangeStatus bind:student={student} bind:open={showChangeStatus}/>
-    {/if}
-
-    {#if showModifyDatabase}
+    <hr>
+  
+    <br>
+    Autoriser à s'inscrire sur des tranches d'âges non adaptées :<br>
+        <a href="#" role="button"  on:click={()=>changeWrongAgeSetting(true)}>Oui</a>
+        <a href="#" role="button"  on:click={()=>changeWrongAgeSetting(false)}>Non</a>
+        <br><br>
+        <Contact {student}/>
+        <br><br>
+        {#if $admin}
+            <a href="#" role="button" class="danger" on:click={()=>deleteStudent(student.id)}>Supprimer</a>
+        {:else}
+            <a href="#" role="button" class="danger" disabled>Supprimer</a>
+        {/if}
+        <a href="#" role="button" class="secondary" on:click={addParent}>Donner accès à un utilisateur</a>
+        <a href={`/prive/mod/sendEmail?id=${student.id}`} role="button">Envoyer un email</a>
+        <a href="#" role="button" class={showModifyDatabase?'secondary':'secondary outline'} on:click={()=>showModifyDatabase=!showModifyDatabase}>
+            Base de données
+        </a>
+        <br><br>
+        {#if showModifyDatabase}
         <h3>Base de données</h3>
         <DisplayObject object={student} origin='student' {student}/>
     {/if}
+ 
+
 {/if}
 
 <slot></slot>
@@ -111,5 +143,17 @@
 
     a{
         margin-top: 10px;
+    }
+
+    .current{
+        background-color: LemonChiffon;
+        padding: 1rem;
+        border: 4px solid gold
+    }
+    .faded{
+        background-color: lightgrey;
+        border: 4px solid grey;
+        padding: 1rem;
+        opacity: 0.5;
     }
 </style>

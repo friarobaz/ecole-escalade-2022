@@ -1,7 +1,7 @@
 <script>
     import AdultSubscriptionForm from "./adult/AdultSubscriptionForm.svelte"
     import ChildSubscriptionForm from "./child/ChildSubscriptionForm.svelte"
-    import { currentSeason, currentDay, subscriptionStatus, subscription } from '$utils/stores'
+    import { currentSeason, currentDay, subscriptionStatus, subscription, admin } from '$utils/stores'
     import { getDayName, getDayUrl } from '$utils/days'
     import YearWarning from "./YearWarning.svelte"
     import InfoMessage from "./InfoMessage.svelte"
@@ -29,7 +29,7 @@
     
     <YearWarning />
     
-    {#if pastStudentsOnly}
+    {#if pastStudentsOnly && $admin===false}
         <InfoMessage msg="Inscription reservée aux élèves inscrits l'année dernière (jusqu'au {dateOfNoRestriction.format('dddd D MMMM YYYY à HH:mm')})" />
 
         <!-- This section is only there for the first year, delete once everyone is subscribed -->

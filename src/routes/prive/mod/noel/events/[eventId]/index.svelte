@@ -1,14 +1,13 @@
 <script>
-    import { _getDoc} from '$utils/firebase/firestore/basics'
+    import { _getDoc, _getDocs} from '$utils/firebase/firestore/basics'
     import {params} from '@roxi/routify'
-    let id = $params.eventId
-    let event, loading
+    let eventId = $params.eventId
+    let event, loading, categories
     
     const getEvent = async ()=>{
         loading = true
-        event = await _getDoc("events", id)
-        console.log(event.data());
-
+        event = await _getDoc("events", eventId)
+        categories = await _getDocs('events', eventId, 'categories')
         loading = false
     }
     getEvent()
@@ -22,29 +21,26 @@
 {:else}
     {#if event}
         <h1>{event.data().title}</h1>
-        {#if event.data().routes.length}
-            <a href="./{id}/addRun" role="button">Ajouter un run</a><br>
+        
+ 
+            <a href="./{eventId}/addRun" role="button">Ajouter un run</a><br>
             <br><br>
             Voies :<br>
-            {#each event.data().categories as cat, i}
-                <a href="./{id}/routes?eventId={id}&catIndex={i}" role="button" class="outline">{cat}</a> &nbsp;
+            {#each categories as cat}
+                <a href="/events/{eventId}/{cat.id}/routes" role="button" class="outline">{cat.data().title}</a> &nbsp;
             {/each}
             <br><br>
             Classement :<br>
-            {#each event.data().categories as cat, i}
-                <a href="/events/{id}/{i}/points" role="button" class="outline">{cat}</a> &nbsp;
+            {#each categories as cat}
+                <a href="/events/{eventId}/{cat.id}/points" role="button" class="outline">{cat.data().title}</a> &nbsp;
             {/each}
             <br><br>
-            <a href="/events/{id}">Page publique de l'évènement</a><br>
+            <a href="/events/{eventId}">Page publique de l'évènement</a><br>
             <br>
-            <a href="./{id}/editRoutes">Modifier les voies</a><br>
-            <a href="./{id}/delRoutes">Supprimer des voies</a><br>
-            <a href="./{id}/editParticipants">Modifier les participants</a><br>
-            <a href="./{id}/assignRoutes">Assigner les voies aux catégories d'ages</a><br>
-            <a href="./{id}/deleteRun">Supprimer un run</a><br>
-        {:else}
-            <a href="./{id}/editRoutes" role="button">Ajouter des voies</a><br>
-        {/if}
+            <a href="./{eventId}/editRoutes">Modifier les voies</a><br>
+            <a href="./{eventId}/editParticipants">Modifier les participants</a><br>
+            <a href="./{eventId}/deleteRun">Supprimer un run</a><br>
+
     {:else}
         Pas d'evenement avec cet id
     {/if}

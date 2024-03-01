@@ -13,6 +13,7 @@
             loading = true
             try {
                 student = await getStudent(studentId)
+                loading = false
             } catch (e) {
                 error = e
                 loading = false

@@ -4,11 +4,11 @@
     import { _updateDoc } from '$utils/firebase/firestore/basics'
     import { arrayUnion } from 'firebase/firestore'
     import {printName} from '$utils/printName'
-    export let route, student, event, reset
+    export let route, student, event, reset, category
     let confirmButton
 
     const addRun = async()=>{
-        await _updateDoc({runs: arrayUnion({student: student.id, route: route.id})}, "events", event.id)
+        await _updateDoc({runs: arrayUnion({student: student.id, route: route.id})}, "events", event.id, 'categories', category.id)
     }
 
     $:if (confirmButton) {
@@ -16,18 +16,19 @@
     }
 
     const getRoute = (routeId)=>{
-        const index = event.data().routes.map(x=>x.id).indexOf(routeId)
-        return event.data().routes[index]
+        const index = category.data().routes.map(x=>x.id).indexOf(routeId)
+        return category.data().routes[index]
     }
+
     const runRecorded = ()=>{
         if (route.color=='Toutes prises') {
-            const testRuns = event.data().runs.filter(x=>x.student==student.id).map(x=>x.route)
+            const testRuns = category.data().runs.filter(x=>x.student==student.id).map(x=>x.route)
             const linesNbs = testRuns.map(x=>getRoute(x)).map(x=>x.lineNb)
             const lineAlreadyClimbed = linesNbs.includes(route.lineNb)
             return lineAlreadyClimbed
         }
 
-        return event.data().runs.filter(x=>x.student==student.id).map(x=>x.route).includes(route.id)
+        return category.data().runs.filter(x=>x.student==student.id).map(x=>x.route).includes(route.id)
     }
 
 
@@ -45,7 +46,7 @@
                     <small>(ligne {route.lineNb})</small>
                 </strong>
                 <br>
-                {routePotential(route.id, event, 1000, student.categorie)} points
+                {routePotential(route.id, category, 1000)} points
             </div>
         </div>
         <form on:submit|preventDefault={addRun}>
@@ -61,14 +62,14 @@
     </div>
     <div class="stats">
         <h4>Statistiques pour {printName(student, [])}</h4>
-        Nombre de voies : <strong>{nbOfRuns(event, student.id)}</strong><br>
+        Nombre de voies : <strong>{nbOfRuns(category, student.id)}</strong><br>
         <br>
-        Points : <strong>{studentPoints(student.id, event, 1000,student.categorie)}</strong><br>
+        Points : <strong>{studentPoints(student.id, category, 1000)}</strong><br>
         <br>
-        Classement : <strong>{rank(student, event).rank}</strong>
-        {#if rank(student, event).otherStudents.length>1}
+        Classement : <strong>{rank(student, category).rank}</strong>
+        {#if rank(student, category).otherStudents.length>1}
             <small>
-                (Ex aequo avec {rank(student, event).otherStudents.length-1} participants)
+                (Ex aequo avec {rank(student, category).otherStudents.length-1} participants)
             </small>
         {/if}
 

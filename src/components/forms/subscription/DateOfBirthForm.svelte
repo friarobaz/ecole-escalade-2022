@@ -66,7 +66,7 @@
         {/if}
         {#if $allowWrongAge}
             <br>
-            <small>Un moniteur (Jules ou Jelena) a donné son accord pour accepter cet élève même si son âge ne correspond pas au cours.</small>
+            <small>Un moniteur a donné son accord pour accepter cet élève même si son âge ne correspond pas au cours.</small>
             <br><br>
             <span><input type="checkbox" bind:checked={hideWarning}></span>
             <small>J'ai vérifié la date de naissance et je veux continuer l'inscription.</small>

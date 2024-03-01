@@ -1,4 +1,5 @@
 
+<!-- routify:meta reset -->
 <script>
     import {routeSends, routePotential, studentPoints} from '$utils/contest'
     import Canvas from '$components/contest/Canvas.svelte'
@@ -8,8 +9,7 @@
     import {params} from '@roxi/routify'
     const MAX_POINTS = 1000
     const eventId = $params.eventId
-    const catId = $params.categorie
-    console.log($params);
+    const catId = $params.catId
     let scores = []
 
     const unsub = onSnapshot(doc(db, "events", eventId, 'categories', catId), (category) => {

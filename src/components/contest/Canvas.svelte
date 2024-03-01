@@ -1,4 +1,3 @@
-
 <script>
     import { onMount } from 'svelte';
     import {COLORS} from '$utils/colors'
@@ -16,7 +15,6 @@
     }
 
     $:if(scores && canvas){
-        console.log("VALUE CHANGED !");
         max = Math.max(...scores.map(x=>x.potential))
         ctx = canvas.getContext("2d")
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -42,7 +40,6 @@
             const background2 = COLORS.filter(x=>x.name===route.color)[0].background2 || background
             var grd = ctx.createLinearGradient(0, 0, 0, CANVAS_HEIGHT);
                 const nbOfStripes = 50
-                console.log(nbOfStripes);
                 for (let i = 0; i < nbOfStripes; i++) {
                     if (i%2) {
                         grd.addColorStop(i/nbOfStripes, background);

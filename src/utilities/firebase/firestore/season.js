@@ -16,7 +16,7 @@ export const getSeasonFromFirestore = async (name) => {
 
 export const getSeason = async (time = "current") => {
   try {
-    const name = seasons()[time]
+    const name = seasons()[time] || 'benevoles'
     return await getSeasonFromFirestore(name)
   } catch (error) {
     throw new BError("$firestore/season => getSeason()", error)

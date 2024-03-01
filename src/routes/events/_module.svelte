@@ -3,8 +3,8 @@
 
 <div id="container">
     <div id="main">
-
         <slot></slot>
+
     </div>
 </div>
 
@@ -12,7 +12,6 @@
     #container{
         display: flex;
         justify-content: center;
-        padding-top: 50px;
     }
 
     #main{

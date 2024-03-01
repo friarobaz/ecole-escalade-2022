@@ -31,7 +31,7 @@
 
 </script>
 
-<span class="container">
+<span class={selectedRoute==route ? "container selected" : "container"}>
     <a href="#" role="button"
     class={faded?'route faded':'route'}
     style="
@@ -61,5 +61,10 @@
 
     .container{
         border: 0px solid purple;
+    }
+    
+    .selected a{
+        text-decoration:underline;
+
     }
 </style>

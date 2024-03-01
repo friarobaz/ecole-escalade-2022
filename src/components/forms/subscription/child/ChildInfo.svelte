@@ -4,7 +4,7 @@
     import NameFormNoRestriction from '../NameFormNoRestriction.svelte';
     import NameFormWithRestriction from '../NameFormWithRestriction.svelte';
 
-    export let pastStudentsOnly
+    export let pastStudentsOnly, selectedStudent
 
     let firstName, lastName, dateOfBirth
 
@@ -19,6 +19,8 @@
     $:if (lastName) $subscription.publicInfo.lastName = lastName.toLowerCase()
     $:if (dateOfBirth) $subscription.privateInfo.dateOfBirth = dateOfBirth
 
+    $:if(selectedStudent) dateOfBirth = selectedStudent.private.dateOfBirth
+
 </script>
 
 <section>
@@ -26,11 +28,12 @@
     
     {#if pastStudentsOnly}
        <!--  <NameFormWithRestriction bind:firstName bind:lastName  /> -->
-        <NameFormWithRestriction bind:firstName bind:lastName  />
+        <NameFormWithRestriction bind:firstName bind:lastName  bind:selectedStudent/>
     {:else}
         <NameFormNoRestriction bind:firstName bind:lastName  />
     {/if}
     <DateOfBirthForm bind:dateOfBirth/>
     
 </section>
+
 

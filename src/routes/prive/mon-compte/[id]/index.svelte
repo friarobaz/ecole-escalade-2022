@@ -25,6 +25,7 @@
     const unsub = onSnapshot(doc(db, "students", urlId), async (doc) => {
         try {
             student = await getStudent(urlId)
+            if(!student.public.seasons[$currentSeason.name]) throw `Cet élève n'est pas inscrit sur la saison ${$currentSeason.name}`
             let day = getDayFromUrl(student.public.seasons[$currentSeason.name].day, $currentSeason.days)
         } catch (err) {
             error = err
@@ -42,7 +43,8 @@
 
     // $:if(student && getDayFromUrl(student.public.seasons[$currentSeason.name].day), $currentSeason.days) error = "Une erreur est survenue"
 </script>
-<ErrorMessage {error} modal={true}/>
+<!-- change true to false to be able to change season 08/12/23 -->
+<ErrorMessage {error} modal={false}/>
 {#if student && !fetching}
     {#if student.public.seasons[$currentSeason.name]}
         <article>

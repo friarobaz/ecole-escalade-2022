@@ -1,90 +1,82 @@
 import {removeDuplicates} from '$utils/removeDuplicates'
 
-const getLineNb = (event, routeId)=>{
-    const route = event.data().routes.filter(x=>x.id===routeId)[0]
+const getLineNb = (category, routeId)=>{
+    const route = category.data().routes.filter(x=>x.id===routeId)[0]
     return route.lineNb
 }
 
-const catRuns = (event, catIndex)=>{
-    if(catIndex==undefined)throw'No catINdex'
-    const catStudents = event.data().participants.filter(x=>x.categorie==catIndex)
-    const ids = catStudents.map(x=>x.id)
-    return event.data().runs.filter(x=>ids.includes(x.student))
-}
-
-const releventRuns = (event, routeId, catIndex)=>{
-    if(catIndex==undefined)throw'No catINdex'
-    const route = event.data().routes.filter(x=>x.id===routeId)[0]
+export const releventRuns = (category, routeId)=>{
+    if(category==undefined)throw'No category'
+    const route = category.data().routes.filter(x=>x.id===routeId)[0]
     let runs = []
     if (route.color === "Toutes prises") {
-        //all event runs in the categorie
-        for (const run of catRuns(event, catIndex)) {
-            const lineNb = getLineNb(event, run.route)
+        //all event runs in the category
+        for (const run of category.data().runs) {
+            const lineNb = getLineNb(category, run.route)
             //all runs with same lineNb
             if (lineNb == route.lineNb) {
                 //don't add if same student
                 if(!runs.map(x=>x.student).includes(run.student)){
                     runs.push(run)
                 }
-                //runs.push(run)
             }
         }
     } else {
-        //all runs from categorie with routeId
-        runs = catRuns(event, catIndex).filter(x=>x.route==routeId)
+        //all runs from category with routeId
+        runs = category.data().runs.filter(x=>x.route==routeId)
     }
     return runs
 }
 
-export const routePoints = (routeId, event, maxPoints, catIndex)=>{
-    if(catIndex==undefined)throw'No catINdex for routePoints'
-    const runs = releventRuns(event, routeId, catIndex)
+export const routePoints = (routeId, category, maxPoints)=>{
+    if(category==undefined)throw'No category for routePoints'
+    const runs = releventRuns(category, routeId)
     if(runs.length===0) return 0
     return Math.floor(maxPoints/(runs.length))
 }
 
-export const routePotential = (routeId, event, maxPoints, catIndex)=>{
-    if(catIndex==undefined)throw'No catINdex for routePotential'
-    const runs = releventRuns(event, routeId, catIndex)
+export const routePotential = (routeId, category, maxPoints)=>{
+    if(category==undefined)throw'No category for routePotential'
+    const runs = releventRuns(category, routeId)
     if(runs.length===0) return maxPoints
     return Math.floor(maxPoints/(runs.length+1))
 }
 
-export const routeSends = (routeId, event, catIndex)=>{
-    if(catIndex==undefined)throw'No catINdex for routeSends'
-    if (!event.data().runs) return 0
-    const releventRuns = catRuns(event, catIndex).filter(x=>x.route==routeId)
+export const routeSends = (routeId, category)=>{
+    if(category==undefined)throw'No category for routeSends'
+    if (!category.data().runs) return 0
+    const releventRuns = category.data().runs.filter(x=>x.route==routeId)
     return releventRuns.length
 }
 
-export const studentPoints = (studentId, event, maxPoints, catIndex)=>{
-    if(catIndex==undefined)throw'No catINdex for studentPoints'
+export const studentPoints = (studentId, category, maxPoints)=>{
+    if(category==undefined)throw'No category for studentPoints'
     let points = 0
-    if (!event.data().runs) return 0
-    const releventRuns = event.data().runs.filter(x=>x.student===studentId)
+    if (!category.data().runs) return 0
+    const releventRuns = category.data().runs.filter(x=>x.student===studentId)
     for (const run of releventRuns) {
-        points += routePoints(run.route, event, maxPoints, catIndex)
+        points += routePoints(run.route, category, maxPoints)
     }
     return points
 }
 
-export const studentsWithPoints = (event, catIndex, maxPoints)=>{
-    const releventPax = event.data().participants.filter(x=>x.categorie==catIndex)
+export const studentsWithPoints = (category, maxPoints)=>{
+    const releventPax = category.data().students
     for (const pax of releventPax) {
-        pax.points = studentPoints(pax.id, event, maxPoints, catIndex)
+        pax.points = studentPoints(pax.id, category, maxPoints)
     }
     releventPax.sort(function(a, b) {return b.points - a.points})
     return releventPax
 }
 
-export const nbOfRuns = (event, studentId) =>{
-    if (!event.data().runs) return 0
-    const releventRuns = event.data().runs.filter(x=>x.student === studentId)
+export const nbOfRuns = (category, studentId) =>{
+    if (!category.data().runs) return 0
+    const releventRuns = category.data().runs.filter(x=>x.student === studentId)
     return releventRuns.length
 }
 
-export const pointsWithStudents = (event, catIndex, maxPoints)=>{
-    const students = studentsWithPoints(event, catIndex, maxPoints)
+export const pointsWithStudents = (category, maxPoints)=>{
+    const students = studentsWithPoints(category, maxPoints)
     let points = students.map(x=>x.points)
     points = removeDuplicates(points)
     points.sort(function(a, b) {return b - a})
@@ -98,11 +90,10 @@ export const pointsWithStudents = (event, catIndex, maxPoints)=>{
     return result
 }
 
-export const rank = (student, event) =>{
-    const catIndex = student.categorie
-    if(catIndex==undefined)throw'No catINdex for rank'
-    const points = studentPoints(student.id, event, 1000, catIndex)
-    const allPoints = pointsWithStudents(event, student.categorie, 1000)
+export const rank = (student, category) =>{
+    if(category==undefined)throw'No category for rank'
+    const points = studentPoints(student.id, category, 1000)
+    const allPoints = pointsWithStudents(category, 1000)
     const studentIndex = allPoints.map(x=>x.points).indexOf(points)
 return {rank:studentIndex+1, otherStudents:allPoints[studentIndex].students}
 }
@@ -116,4 +107,12 @@ export const gymRouteToEventRoute = (gymRoute, gym)=>{
         grade: gymRoute.data().grade,
         color: gymRoute.data().color
     }
+}
+
+export const studentCategory = (student, categories)=>{
+    const relevantCats = categories.filter(x=>x.data().students.map(x=>x.id).includes(student.id))
+    console.log(relevantCats.length);
+    if (relevantCats.length > 1) throw 'Student found in multiple categories'
+    if (relevantCats.length < 1) throw 'Student not found in any categories'
+    return relevantCats[0]
 }

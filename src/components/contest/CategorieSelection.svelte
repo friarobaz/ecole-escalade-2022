@@ -1,16 +1,16 @@
 <script>
-    export let event, selectedCatIndex
+    export let categories, selectedCategory
 
-    const toggleCategorie = (catIndex)=>{
-        if (selectedCatIndex == catIndex) {
-            selectedCatIndex = undefined
+    const toggleCategorie = (category)=>{
+        if (selectedCategory == category) {
+            selectedCategory = undefined
         }else{
-            selectedCatIndex = catIndex
+            selectedCategory = category
         }
     }
 </script>
 
 
-{#each event.data().categories as cat, i}
-    <a href="#" role="button" class={selectedCatIndex==i?'':'outline'} on:click={()=>toggleCategorie(i)}>{cat}</a> &nbsp;
+{#each categories as cat}
+    <a href="#" role="button" class={selectedCategory==cat?'':'outline'} on:click={()=>toggleCategorie(cat)}>{cat.data().title}</a> &nbsp;
 {/each}

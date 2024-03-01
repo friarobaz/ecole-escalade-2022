@@ -12,6 +12,18 @@ import { printName } from "$utils/printName";
     Âge : <strong>{getAge(student.private.dateOfBirth, false)} ans</strong>
     <small>né(e) le {dayjs(student.private.dateOfBirth).format('DD/MM/YY')}</small> 
     <br>
+    {#if student.public.allowed}
+    ⚠️
+        <span style="color:red">
+            Cet élève est autorisé(e) à s'inscrire sur des créneaux non adaptés à son âge.
+        </span>
+    {:else}
+    <span style="color:green">
+
+        Cet élève n'est pas autorisé(e) à s'inscrire sur des créneaux non adaptés à son âge.
+    </span>
+    {/if}
+    <br>
 {/if}
 
 <!-- Email -->
